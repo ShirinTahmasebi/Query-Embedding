@@ -2,10 +2,10 @@ import torch
 from pandas import DataFrame
 from transformers import BertForMaskedLM, AutoModelForMaskedLM
 
-from common.constants import Constants
+from constants import Constants
 from data_preparation import DataPreparation
-from helpers.helper_enum import ModelTaskItem, BaseModel
-from common.torch_dataset import TorchDataset
+from helper_enum import ModelTaskItem, BaseModel
+from torch_dataset import TorchDataset
 
 
 def initialize_sql_base_tokenizer(df: DataFrame):

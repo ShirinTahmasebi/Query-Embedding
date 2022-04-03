@@ -1,7 +1,7 @@
 import abc
 import torch
 
-from helpers.helper_enum import FineTuningTasks
+from helper_enum import FineTuningTasks
 
 
 class DataPreparation(metaclass=abc.ABCMeta):

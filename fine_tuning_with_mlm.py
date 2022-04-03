@@ -1,7 +1,7 @@
 import pandas as pd
 
-from helpers.helper import *
-from helpers.helper_enum import AllModelTaskItems
+from helper import *
+from helper_enum import AllModelTaskItems
 
 if __name__ == '__main__':
     df = pd.read_csv(Constants.URL_DATASET_PREPROCESSED_TOKENIZED)
