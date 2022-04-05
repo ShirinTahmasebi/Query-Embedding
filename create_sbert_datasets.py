@@ -128,7 +128,7 @@ if __name__ == '__main__':
     assert not siamese_df.isnull().values.any()
     assert not triplet_df.isnull().values.any()
 
-    siamese_df.to_csv(Constants.DATASET_PATH_SIAMESE, index=False)
-    triplet_df.to_csv(Constants.DATASET_PATH_TRIPLET, index=False)
+    siamese_df.to_csv(Constants.PATH_DATASET_SIAMESE, index=False)
+    triplet_df.to_csv(Constants.PATH_DATASET_TRIPLET, index=False)
 
     print('Datasets are saved!')

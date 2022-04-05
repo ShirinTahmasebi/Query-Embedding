@@ -1,14 +1,13 @@
 import torch
-from pandas import DataFrame
+import pandas as pd
 from transformers import BertForMaskedLM, AutoModelForMaskedLM
 
 from constants import Constants
-from data_preparation import DataPreparation
-from helper_enum import ModelTaskItem, BaseModel
+from helper_enum import BaseModel
 from torch_dataset import TorchDataset
 
 
-def initialize_sql_base_tokenizer(df: DataFrame):
+def initialize_sql_base_tokenizer(df: pd.DataFrame):
     import tensorflow_datasets as tfds
     import ast
     list_of_tokens = df['tokens'].map(lambda x: ast.literal_eval(
@@ -24,10 +23,8 @@ def initialize_sql_base_tokenizer(df: DataFrame):
     return sql_tokenizer
 
 
-def sql_based_tokenizer(input_df: DataFrame, sql_tokenizer=None):
-    input_list = input_df.full_query.tolist()
-    if sql_tokenizer is None:
-        sql_tokenizer = initialize_sql_base_tokenizer(input_df)
+def sql_based_tokenizer(input_col: pd.Series, sql_tokenizer):
+    input_list = input_col.tolist()
 
     tokenized = {
         'input_ids': torch.tensor([]),
@@ -127,20 +124,3 @@ def training_loop(model, train_dataset):
             # Print relevant info to progress bar
             loop.set_description(f'Epoch {epoch}')
             loop.set_postfix(loss=loss.item())
-
-
-def fine_tune_model_and_save(tokenized, model_task_item: ModelTaskItem):
-    model = fetch_model(model_task_item.get_model())
-    fine_tuning_task = model_task_item.get_task()
-    model_name = model_task_item.get_prefix_model_name()
-
-    data_processor = DataPreparation.init_processor(fine_tuning_task)
-    train_dataset, eval_dataset = create_torch_dataset(tokenized, data_processor)
-
-    training_loop(
-        model=model,
-        train_dataset=train_dataset
-    )
-
-    import pickle
-    pickle.dump(model, open(model_name, 'wb'))
