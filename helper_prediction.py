@@ -4,6 +4,7 @@ import torch
 
 from constants import Constants
 from helper import load_from_disk_or_call_func, sql_based_tokenizer
+from helper_enum import ModelTaskItem
 from sbert_model_creator import create_sbert_model_triplet
 from sbert_model_triplet import SBertModelTriplet
 
@@ -16,9 +17,12 @@ def load_bert_sub_model_of_siamese():
     # return siamese_model_loaded.#layers[0].layers[9].layers[3]
 
 
-def load_bert_sub_model_of_triplet(bert_model_name: str):
+def load_bert_sub_model_of_triplet(model_task_item: ModelTaskItem):
+    bert_model_name = model_task_item.get_model_name()
+    weights_path = model_task_item.get_weights_path()
+
     triplet_model_loaded = SBertModelTriplet(create_sbert_model_triplet(bert_model_name))
-    triplet_model_loaded.load_weights(Constants.PATH_FINE_TUNED_MODEL_WEIGHTS_TRIPLET_BERT)
+    triplet_model_loaded.load_weights(weights_path)
     return triplet_model_loaded.layers[0].layers[9].layers[3]
 
 

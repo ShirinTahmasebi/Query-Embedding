@@ -1,4 +1,5 @@
 from helper import *
+from helper_enum import AllModelTaskItems, ModelTaskItem
 from helper_prediction import load_bert_sub_model_of_triplet
 
 
@@ -33,7 +34,8 @@ def predict_and_save_results(fine_tuned_model, path_dict: dict):
 
         batch_size = 20
         data_count = len(sql_based_tokenized['input_ids'])
-        points_list = [], all_cls_list = []
+        points_list = []
+        all_cls_list = []
         continue_loop = True
 
         for i in range(0, data_count, batch_size):
@@ -62,12 +64,13 @@ def predict_and_save_results(fine_tuned_model, path_dict: dict):
             points_list = [*points_list, *cls_list_2d]
             all_cls_list = [*all_cls_list, *cls_list]
 
-            save_prediction_result(path_dict, points_list, all_cls_list)
+            save_prediction_result(path_dict, str(label_index), points_list, all_cls_list)
 
             if not continue_loop:
                 break
 
 
 if __name__ == '__main__':
-    bert_fine_tuned_with_triplet_model = load_bert_sub_model_of_triplet(Constants.BERT_MODEL_NAME)
-    predict_and_save_results(bert_fine_tuned_with_triplet_model, Constants.TRIPLET_BERT_RESULT_PATH_DIC)
+    task: ModelTaskItem = AllModelTaskItems.CODEBERT_TRIPLET.value
+    bert_fine_tuned_with_triplet_model = load_bert_sub_model_of_triplet(task)
+    predict_and_save_results(bert_fine_tuned_with_triplet_model, task.get_prediction_results_path())

@@ -1,3 +1,5 @@
+import pandas as pd
+
 from constants import Constants
 
 
@@ -43,6 +45,21 @@ def plot_each_label(path_dict: dict):
     plt.show()
 
 
+def calculate_cosine_similarity_by_label(label_one, label_two, all_cls_dict):
+    import numpy as np
+    from numpy.linalg import norm
+
+    list_one = all_cls_dict[label_one]
+    list_two = all_cls_dict[label_two]
+
+    similarity_score = 0
+    for item_one in list_one:
+        for item_two in list_two:
+            similarity_score += np.dot(item_one, item_two) / (norm(item_one) * norm(item_two))
+
+    return similarity_score / (len(list_one) * len(list_two))
+
+
 def calculate_cosine_similarity(path_dict: dict):
     import pickle
     cls_path = path_dict['cls']
@@ -50,7 +67,24 @@ def calculate_cosine_similarity(path_dict: dict):
     for label_index in range(12):
         cls = pickle.load(open(cls_path.format('label_' + str(label_index)), 'rb'))
         all_cls_dict['label_' + str(label_index)] = cls
-    pass
+
+    cosine_similarity_dict = {}
+
+    for i in range(12):
+        for j in range(i, 12):
+            src_label = 'label_' + str(i)
+            dest_label = 'label_' + str(j)
+            cosine_similarity_dict[(src_label, dest_label)] = \
+                calculate_cosine_similarity_by_label(src_label, dest_label, all_cls_dict)
+
+    from sklearn import preprocessing
+    import numpy as np
+    min_max_scaler = preprocessing.MinMaxScaler()
+    score_scaled = min_max_scaler.fit_transform(np.array(list(cosine_similarity_dict.values())).reshape(-1,1))
+    df = pd.DataFrame(columns=['labels', 'score'])
+    df['score'] = np.squeeze(score_scaled)
+    df['labels'] = list(cosine_similarity_dict.keys())
+    return df
 
 
 if __name__ == '__main__':
