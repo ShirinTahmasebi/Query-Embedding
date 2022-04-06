@@ -103,6 +103,8 @@ if __name__ == '__main__':
     patterns.add_item(QueryPattern(11, query_pattern_regex[11], []))
 
     df['labels'] = df.apply(lambda x: patterns.get_matched_pattern_key(x.full_query), axis=1)
+    df.to_csv(Constants.PATH_DATASET_TOKENIZED_AND_LABELED, index=False)
+
     labeled_df = df[df.labels != -1][['full_query', 'tokens', 'labels']]
 
     similar_queries = []

@@ -7,6 +7,23 @@ from helper_enum import BaseModel
 from torch_dataset import TorchDataset
 
 
+def load_from_disk_or_call_func(path: str, function, *args):
+    import pickle
+    try:
+        loaded_object = pickle.load(open(path, 'rb'))
+        if loaded_object:
+            return loaded_object
+    except Exception:
+        print("File ", path, " did not exist. Start creating the file ...")
+
+    calculated_object = function(*args)
+    pickle.dump(calculated_object, open(path, 'wb'))
+    return calculated_object
+
+def tensor_torch_to_tf(tensor_torch):
+    import tensorflow as tf
+    return tf.convert_to_tensor(tensor_torch.numpy())
+
 def initialize_sql_base_tokenizer(df: pd.DataFrame):
     import tensorflow_datasets as tfds
     import ast

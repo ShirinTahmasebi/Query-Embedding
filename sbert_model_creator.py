@@ -7,8 +7,8 @@ import tensorflow as tf
 from transformers import TFAutoModel
 
 
-def initialize_embedding_model():
-    bert_model = TFAutoModel.from_pretrained(Constants.BERT_MODEL_NAME, output_hidden_states=True)
+def initialize_embedding_model(bert_model_name: str):
+    bert_model = TFAutoModel.from_pretrained(bert_model_name, output_hidden_states=True)
 
     input_layer_input_ids = tf.keras.layers.Input(shape=(Constants.MAX_LENGTH,), dtype=tf.int64)
     input_layer_attention_mask = tf.keras.layers.Input(shape=(Constants.MAX_LENGTH,), dtype=tf.int64)
@@ -55,8 +55,8 @@ def create_sbert_model_siamese():
     return siamese_network
 
 
-def create_sbert_model_triplet():
-    embedding_model = initialize_embedding_model()
+def create_sbert_model_triplet(bert_model_name: str):
+    embedding_model = initialize_embedding_model(bert_model_name)
 
     anchor_input_input_ids = layers.Input(name="anchor_input_ids", shape=(Constants.MAX_LENGTH,), dtype=tf.int64)
     anchor_input_attention_mask = layers.Input(name="anchor_attention", shape=(Constants.MAX_LENGTH,), dtype=tf.int64)
