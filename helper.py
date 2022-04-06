@@ -84,7 +84,7 @@ def create_torch_dataset(tokenized, data_processor):
     return train_dataset, eval_dataset
 
 
-def fetch_model(model_enum: BaseModel):
+def fetch_model(model_enum: str):
     model = None
     if model_enum == BaseModel.BERT:
         model = BertForMaskedLM.from_pretrained(Constants.BERT_MODEL_NAME_BASE_UNCASED)

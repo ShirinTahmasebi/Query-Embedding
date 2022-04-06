@@ -1,9 +1,21 @@
 from helper import *
-from helper_prediction import get_tokenized_siamese_inputs, load_datasets, get_tokenized_triplet_inputs, \
-    train_triplet_model
+from helper_enum import ModelTaskItem, AllModelTaskItems
+from helper_prediction import *
 from prediction import predict_and_save_results
 
-# TODO Shirin: Needs refactoring!
+
+def fine_tune_save_and_predict(model_task_item: ModelTaskItem, model_inputs):
+    # Train Triplet Model.
+    trained_triplet_model = train_triplet_model(model_task_item.get_model_name(), *model_inputs)
+    trained_triplet_model.save_weights(model_task_item.get_weights_path())
+
+    # Evaluate the trained Triplet model.
+    predict_and_save_results(
+        trained_triplet_model.layers[0].layers[9].layers[3],
+        model_task_item.get_prediction_results_path()
+    )
+
+
 if __name__ == '__main__':
     df, siamese_df, triplet_df = load_datasets(
         Constants.URL_DATASET_PREPROCESSED_TOKENIZED,
@@ -16,15 +28,9 @@ if __name__ == '__main__':
     tokenized_input_siamese_one, tokenized_input_siamese_two = get_tokenized_siamese_inputs(siamese_df, sql_tokenizer)
     tokenized_triplet_inputs = get_tokenized_triplet_inputs(triplet_df, sql_tokenizer)
 
-    # Train Triplet Model.
-    trained_triplet_model = train_triplet_model(Constants.BERT_MODEL_NAME, *tokenized_triplet_inputs)
-    trained_triplet_model.save_weights(Constants.PATH_FINE_TUNED_MODEL_WEIGHTS_TRIPLET_BERT)
+    fine_tune_save_and_predict(AllModelTaskItems.BERT_TRIPLET.value, tokenized_triplet_inputs)
+    fine_tune_save_and_predict(AllModelTaskItems.CODEBERT_TRIPLET.value, tokenized_triplet_inputs)
 
-    # Evaluate the trained Triplet model.
-    predict_and_save_results(
-        trained_triplet_model.layers[0].layers[9].layers[3],
-        Constants.TRIPLET_BERT_RESULT_PATH_DIC
-    )
     #
     # siamese_network = SBertModelSiamese(create_sbert_model_siamese())
     # siamese_network.compile(optimizer=optimizers.Adam(0.0001))
