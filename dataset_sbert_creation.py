@@ -1,25 +1,28 @@
 import pandas as pd
 
 from constants import Constants
-from dataset_models import DatasetSDSS
+from dataset_models import Dataset
+from dataset_models_bombay import DatasetBombay
+from dataset_models_sdss import DatasetSDSS
 from helper_dataset_creation import find_similar_queries, find_different_queries, create_siamese_batch_row, \
     create_triplet_batch_row
 
-if __name__ == '__main__':
+
+def create_and_save_sbert_datasets(dataset: Dataset):
     triplet_column_list = [Constants.COLUMN_NAME_ANCHOR, Constants.COLUMN_NAME_POSITIVE, Constants.COLUMN_NAME_NEGATIVE]
-    simese_column_list = [
+    siamese_column_list = [
         Constants.COLUMN_NAME_QUERY_ONE,
         Constants.COLUMN_NAME_QUERY_TWO,
         Constants.COLUMN_NAME_SIMILARITY_SCORE
     ]
-
-    dataset = DatasetSDSS()
-    df = dataset.process()
-    labeled_df = df[df.labels != -1][['full_query', 'tokens', 'labels']]
-
-    similar_queries = []
-    siamese_df = pd.DataFrame(columns=simese_column_list)
+    siamese_df = pd.DataFrame(columns=siamese_column_list)
     triplet_df = pd.DataFrame(columns=triplet_column_list)
+
+    # Process and get dataset as a pandas dataframe
+    # This processed dataset is supposed to have the following column names:
+    # full_query, labels
+    df = dataset.process()
+    labeled_df = df[df.labels != -1][['full_query', 'labels']]
 
     for labeled_df_index, labeled_df_row in labeled_df.iterrows():
         query = labeled_df_row.full_query
@@ -37,7 +40,12 @@ if __name__ == '__main__':
     assert not siamese_df.isnull().values.any()
     assert not triplet_df.isnull().values.any()
 
-    siamese_df.to_csv(Constants.PATH_DATASET_SIAMESE_SDSS, index=False)
-    triplet_df.to_csv(Constants.PATH_DATASET_TRIPLET_SDSS, index=False)
+    siamese_df.to_csv(dataset.get_path_siamese_dataset(), index=False)
+    triplet_df.to_csv(dataset.get_path_triplet_dataset(), index=False)
 
     print('Datasets are saved!')
+
+
+if __name__ == '__main__':
+    create_and_save_sbert_datasets(DatasetSDSS())
+    create_and_save_sbert_datasets(DatasetBombay())

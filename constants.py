@@ -6,10 +6,11 @@ class Constants:
     DATASET_NAME_BOMBAY = 'bombay'
 
     PATH_DATASET_DIR = '/home/shirin/query_embedding/datasets'
-    PATH_DATASET_SBERT_DIR = '{}/{}/sbert'.format(PATH_DATASET_DIR)
+    PATH_DATASET_SBERT_DIR = PATH_DATASET_DIR + '/{}/sbert'
 
     # SDSS
-    PATH_DATASET_TOKENIZED_AND_LABELED_SDSS = '{}/labeled.csv'.format(PATH_DATASET_SBERT_DIR.format(DATASET_NAME_SDSS))
+    PATH_DATASET_TOKENIZED_AND_LABELED_SDSS = '{}/labeled.csv'.format(
+        PATH_DATASET_SBERT_DIR.format(DATASET_NAME_SDSS))
     PATH_DATASET_SIAMESE_SDSS = '{}/siamese.csv'.format(PATH_DATASET_SBERT_DIR.format(DATASET_NAME_SDSS))
     PATH_DATASET_TRIPLET_SDSS = '{}/triplet.csv'.format(PATH_DATASET_SBERT_DIR.format(DATASET_NAME_SDSS))
 
