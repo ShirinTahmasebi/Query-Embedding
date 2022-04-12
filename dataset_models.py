@@ -21,6 +21,10 @@ class Dataset(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
+    def get_path_labeled_tokenized_dataset(self):
+        pass
+
+    @abc.abstractmethod
     def get_path_siamese_dataset(self):
         pass
 

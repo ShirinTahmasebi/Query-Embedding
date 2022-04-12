@@ -31,6 +31,9 @@ class DatasetSDSS(Dataset):
     def get_path_labeled_dataset(self):
         return Constants.PATH_DATASET_TOKENIZED_AND_LABELED_SDSS
 
+    def get_path_labeled_tokenized_dataset(self):
+        return Constants.PATH_DATASET_TOKENIZED_AND_LABELED_SDSS
+
     def get_path_siamese_dataset(self):
         return Constants.PATH_DATASET_SIAMESE_SDSS
 
