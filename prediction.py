@@ -1,31 +1,53 @@
+from dataset_models import Dataset
+from dataset_models_bombay import DatasetBombay
 from helper import *
 from helper_enum import AllModelTaskItems, ModelTaskItem
 from helper_prediction import load_bert_sub_model_of_triplet, load_bert_sub_model_of_siamese
 
 
 def save_prediction_result(path_dict: dict, label_index: str, points_list: list, all_cls_list: list):
+    from pathlib import Path
+    path_str_x = path_dict['x'].format('label_' + label_index)
+    path_str_y = path_dict['y'].format('label_' + label_index)
+    path_str_cls = path_dict['cls'].format('label_' + label_index)
+
+    path_x = Path(path_str_x)
+    path_y = Path(path_str_y)
+    path_cls = Path(path_str_cls)
+
+    if not Path.exists(path_x.parent):
+        Path.mkdir(path_x.parent)
+
+    if not Path.exists(path_y.parent):
+        Path.mkdir(path_y.parent)
+
+    if not Path.exists(path_cls.parent):
+        Path.mkdir(path_cls.parent)
+
     import pickle
 
     x, y = zip(*points_list)
 
-    with open(path_dict['x'].format('label_' + label_index), 'wb') as file:
+    with open(path_str_x, 'wb') as file:
         pickle.dump(x, file)
 
-    with open(path_dict['y'].format('label_' + label_index), 'wb') as file:
+    with open(path_str_y, 'wb') as file:
         pickle.dump(y, file)
 
-    with open(path_dict['cls'].format('label_' + label_index), 'wb') as file:
+    with open(path_str_cls, 'wb') as file:
         pickle.dump(all_cls_list, file)
 
 
-def predict_and_save_results(fine_tuned_model, path_dict: dict):
-    df = pd.read_csv(Constants.PATH_DATASET_TOKENIZED_AND_LABELED_SDSS)
-    sql_tokenizer = load_from_disk_or_call_func(Constants.PATH_TOKENIZER, initialize_sql_base_tokenizer, df)
+def predict_and_save_results(fine_tuned_model, path_dict: dict, dataset: Dataset):
+    df = pd.read_csv(dataset.get_path_labeled_tokenized_dataset())
+    sql_tokenizer = load_from_disk_or_call_func(dataset.get_path_tokenizer(), initialize_sql_base_tokenizer, df)
     sql_tokenized = load_from_disk_or_call_func(
-        Constants.PATH_TOKENIZED_DF, sql_based_tokenizer, df.full_query, sql_tokenizer
+        dataset.get_tokenized_path(), sql_based_tokenizer, df['full_query'], sql_tokenizer
     )[1]
 
-    for label_index in range(12):
+    import numpy as np
+    labels_count = np.unique(df[df['labels'] != -1]['labels'])
+    for label_index in range(labels_count):
         sql_based_tokenized = {
             'input_ids': tensor_torch_to_tf(sql_tokenized['input_ids'][df['labels'] == label_index]),
             'attention_mask': tensor_torch_to_tf(sql_tokenized['attention_mask'][df['labels'] == label_index]),
@@ -75,18 +97,36 @@ def predict_and_save_results(fine_tuned_model, path_dict: dict):
 
 
 if __name__ == '__main__':
+    dataset = DatasetBombay()
+
     task: ModelTaskItem = AllModelTaskItems.CODEBERT_TRIPLET.value
-    code_bert_fine_tuned_with_triplet_model = load_bert_sub_model_of_triplet(task)
-    predict_and_save_results(code_bert_fine_tuned_with_triplet_model, task.get_prediction_results_path())
+    code_bert_fine_tuned_with_triplet_model = load_bert_sub_model_of_triplet(task, dataset)
+    predict_and_save_results(
+        code_bert_fine_tuned_with_triplet_model,
+        task.get_prediction_results_path(),
+        dataset
+    )
 
     task: ModelTaskItem = AllModelTaskItems.BERT_TRIPLET.value
-    bert_fine_tuned_with_triplet_model = load_bert_sub_model_of_triplet(task)
-    predict_and_save_results(bert_fine_tuned_with_triplet_model, task.get_prediction_results_path())
+    bert_fine_tuned_with_triplet_model = load_bert_sub_model_of_triplet(task, dataset)
+    predict_and_save_results(
+        bert_fine_tuned_with_triplet_model,
+        task.get_prediction_results_path(),
+        dataset
+    )
 
     task: ModelTaskItem = AllModelTaskItems.CODEBERT_SIAMESE.value
-    code_bert_fine_tuned_with_siamese_model = load_bert_sub_model_of_siamese(task)
-    predict_and_save_results(code_bert_fine_tuned_with_siamese_model, task.get_prediction_results_path())
+    code_bert_fine_tuned_with_siamese_model = load_bert_sub_model_of_siamese(task, dataset)
+    predict_and_save_results(
+        code_bert_fine_tuned_with_siamese_model,
+        task.get_prediction_results_path(),
+        dataset
+    )
 
     task: ModelTaskItem = AllModelTaskItems.BERT_SIAMESE.value
-    bert_fine_tuned_with_siamese_model = load_bert_sub_model_of_siamese(task)
-    predict_and_save_results(bert_fine_tuned_with_siamese_model, task.get_prediction_results_path())
+    bert_fine_tuned_with_siamese_model = load_bert_sub_model_of_siamese(task, dataset)
+    predict_and_save_results(
+        bert_fine_tuned_with_siamese_model,
+        task.get_prediction_results_path(),
+        dataset
+    )

@@ -33,6 +33,26 @@ class Dataset(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
+    def get_path_tokenizer(self):
+        pass
+
+    @abc.abstractmethod
+    def get_tokenized_path(self):
+        pass
+
+    @abc.abstractmethod
+    def get_path_tokenized_triplet_anchor(self):
+        pass
+
+    @abc.abstractmethod
+    def get_path_tokenized_triplet_positive(self):
+        pass
+
+    @abc.abstractmethod
+    def get_path_tokenized_triplet_negative(self):
+        pass
+
+    @abc.abstractmethod
     def add_label(self, df: DataFrame):
         pass
 
@@ -58,3 +78,7 @@ class Dataset(metaclass=abc.ABCMeta):
 
         df = self.postprocess(df)
         return df[df.labels != -1]
+
+    @abc.abstractmethod
+    def get_name(self):
+        pass

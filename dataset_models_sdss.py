@@ -40,6 +40,21 @@ class DatasetSDSS(Dataset):
     def get_path_triplet_dataset(self):
         return Constants.PATH_DATASET_TRIPLET_SDSS
 
+    def get_path_tokenizer(self):
+        return Constants.PATH_TOKENIZER_SDSS
+
+    def get_tokenized_path(self):
+        return Constants.PATH_DATASET_TOKENIZED_SDSS
+
+    def get_path_tokenized_triplet_anchor(self):
+        return Constants.PATH_TOKENIZED_TRIPLET_ANCHOR_SDSS
+
+    def get_path_tokenized_triplet_positive(self):
+        return Constants.PATH_TOKENIZED_TRIPLET_POSITIVE_SDSS
+
+    def get_path_tokenized_triplet_negative(self):
+        return Constants.PATH_TOKENIZED_TRIPLET_NEGATIVE_SDSS
+
     def add_label(self, df):
         df['labels'] = df.apply(lambda x: self.patterns.get_matched_pattern_key(x.full_query), axis=1)
         return df
@@ -52,3 +67,6 @@ class DatasetSDSS(Dataset):
 
     def postprocess(self, df: pd.DataFrame):
         return df
+
+    def get_name(self):
+        return 'sdss'

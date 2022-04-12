@@ -20,21 +20,31 @@ def load_from_disk_or_call_func(path: str, function, *args):
     pickle.dump(calculated_object, open(path, 'wb'))
     return calculated_object
 
+
 def tensor_torch_to_tf(tensor_torch):
     import tensorflow as tf
     return tf.convert_to_tensor(tensor_torch.numpy())
 
-def initialize_sql_base_tokenizer(df: pd.DataFrame):
-    import tensorflow_datasets as tfds
-    import ast
-    list_of_tokens = df['tokens'].map(lambda x: ast.literal_eval(
-        x.replace(" ''", " '\\'")
-            .replace("'',", "\\'',")
-            .replace("'']", "\\'']")
-    ))
 
-    import itertools
-    all_df_tokens = list(itertools.chain(*list_of_tokens))
+def initialize_sql_base_tokenizer(df: pd.DataFrame):
+    import json
+    import tensorflow_datasets as tfds
+    all_df_tokens = []
+    for item in df['tokens']:
+        try:
+            item_list = json.loads(
+                item
+                    .replace(', \'\',', ', \"\",')
+                    .replace(', \'\']', ', \"\"]')
+                    .replace(', \'\'', ', \'\\\'')
+                    .replace('\'\']', '\\\'\']')
+                    .replace('\'\',', '\\\'\',')
+                    .replace('\'', '\"')
+            )
+            all_df_tokens = all_df_tokens + item_list
+        except Exception:
+            print("The following tokenized query string cannot be converted to list:")
+            print(item)
 
     sql_tokenizer = tfds.deprecated.text.SubwordTextEncoder(set(all_df_tokens))
     return sql_tokenizer

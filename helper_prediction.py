@@ -3,6 +3,7 @@ import tensorflow as tf
 import torch
 
 from constants import Constants
+from dataset_models import Dataset
 from helper import load_from_disk_or_call_func, sql_based_tokenizer
 from helper_enum import ModelTaskItem
 from sbert_model_creator import create_sbert_model_triplet, create_sbert_model_siamese
@@ -10,18 +11,18 @@ from sbert_model_siamese import SBertModelSiamese
 from sbert_model_triplet import SBertModelTriplet
 
 
-def load_bert_sub_model_of_siamese(model_task_item: ModelTaskItem):
+def load_bert_sub_model_of_siamese(model_task_item: ModelTaskItem, dataset: Dataset):
     bert_model_name = model_task_item.get_model_name()
-    weights_path = model_task_item.get_weights_path()
+    weights_path = model_task_item.get_weights_path().format(dataset.get_name())
 
     siamese_model_loaded = SBertModelSiamese(create_sbert_model_siamese(bert_model_name))
     siamese_model_loaded.load_weights(weights_path)
     return siamese_model_loaded.layers[0].layers[6].layers[3]
 
 
-def load_bert_sub_model_of_triplet(model_task_item: ModelTaskItem):
+def load_bert_sub_model_of_triplet(model_task_item: ModelTaskItem, dataset: Dataset):
     bert_model_name = model_task_item.get_model_name()
-    weights_path = model_task_item.get_weights_path()
+    weights_path = model_task_item.get_weights_path().format(dataset.get_name())
 
     triplet_model_loaded = SBertModelTriplet(create_sbert_model_triplet(bert_model_name))
     triplet_model_loaded.load_weights(weights_path)
@@ -51,23 +52,24 @@ def get_tokenized_siamese_inputs(siamese_df: pd.DataFrame, sql_tokenizer):
     return tokenized_input_siamese_one, tokenized_input_siamese_two
 
 
-def get_tokenized_triplet_inputs(triplet_df: pd.DataFrame, sql_tokenizer):
+def get_tokenized_triplet_inputs(dataset: Dataset, sql_tokenizer):
+    triplet_df = pd.read_csv(dataset.get_path_triplet_dataset())
     tokenized_input_triplet_anchor = load_from_disk_or_call_func(
-        Constants.PATH_TOKENIZED_TRIPLET_ANCHOR,
+        dataset.get_path_tokenized_triplet_anchor(),
         sql_based_tokenizer,
         triplet_df['anchor'],  # This should be passed to the 'sql_based_tokenizer' function.
         sql_tokenizer  # This should be passed to the 'sql_based_tokenizer' function.
     )[1]
 
     tokenized_input_triplet_positive = load_from_disk_or_call_func(
-        Constants.PATH_TOKENIZED_TRIPLET_POSITIVE,
+        dataset.get_path_tokenized_triplet_positive(),
         sql_based_tokenizer,
         triplet_df['positive'],  # This should be passed to the 'sql_based_tokenizer' function.
         sql_tokenizer  # This should be passed to the 'sql_based_tokenizer' function.
     )[1]
 
     tokenized_input_triplet_negative = load_from_disk_or_call_func(
-        Constants.PATH_TOKENIZED_TRIPLET_NEGATIVE,
+        dataset.get_path_tokenized_triplet_negative(),
         sql_based_tokenizer,
         triplet_df['negative'],  # This should be passed to the 'sql_based_tokenizer' function.
         sql_tokenizer  # This should be passed to the 'sql_based_tokenizer' function.

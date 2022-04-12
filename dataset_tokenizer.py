@@ -32,6 +32,7 @@ def create_and_save_tokenizer_script():
 from helper_tokenization import perl5lib, perlfunc, perlreq
 
 
+# noinspection PyUnusedLocal
 @perlfunc
 @perlreq(Constants.PATH_BASE + '/tokenizer_script.pl')
 def callee(query):
