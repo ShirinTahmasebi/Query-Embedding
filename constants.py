@@ -1,9 +1,23 @@
 class Constants:
-    URL_DATASET_PREPROCESSED_TOKENIZED = "https://raw.githubusercontent.com/ShirinTahmasebi/KTH-ID2223/main/dataset/preprocessed_tokenized_sdss.csv"
+    URL_DATASET_PREPROCESSED_TOKENIZED_SDSS = "https://raw.githubusercontent.com/ShirinTahmasebi/KTH-ID2223/main/dataset/preprocessed_tokenized_sdss.csv"
+    URL_DATASET_PREPROCESSED_RAW_BOMBAY = "https://raw.githubusercontent.com/UBOdin/EttuBench/master/data/bombay_queries.csv"
 
-    PATH_DATASET_TOKENIZED_AND_LABELED = '/home/shirin/query_embedding/df_labeled.csv'
-    PATH_DATASET_SIAMESE = '/home/shirin/query_embedding/df_siamese.csv'
-    PATH_DATASET_TRIPLET = '/home/shirin/query_embedding/df_triplet.csv'
+    DATASET_NAME_SDSS = 'sdss'
+    DATASET_NAME_BOMBAY = 'bombay'
+
+    PATH_DATASET_DIR = '/home/shirin/query_embedding/datasets'
+    PATH_DATASET_SBERT_DIR = '{}/{}/sbert'.format(PATH_DATASET_DIR)
+
+    # SDSS
+    PATH_DATASET_TOKENIZED_AND_LABELED_SDSS = '{}/labeled.csv'.format(PATH_DATASET_SBERT_DIR.format(DATASET_NAME_SDSS))
+    PATH_DATASET_SIAMESE_SDSS = '{}/siamese.csv'.format(PATH_DATASET_SBERT_DIR.format(DATASET_NAME_SDSS))
+    PATH_DATASET_TRIPLET_SDSS = '{}/triplet.csv'.format(PATH_DATASET_SBERT_DIR.format(DATASET_NAME_SDSS))
+
+    # Bombay
+    PATH_DATASET_TOKENIZED_AND_LABELED_BOMBAY = '{}/labeled.csv'.format(
+        PATH_DATASET_SBERT_DIR.format(DATASET_NAME_BOMBAY))
+    PATH_DATASET_SIAMESE_BOMBAY = '{}/siamese.csv'.format(PATH_DATASET_SBERT_DIR.format(DATASET_NAME_BOMBAY))
+    PATH_DATASET_TRIPLET_BOMBAY = '{}/triplet.csv'.format(PATH_DATASET_SBERT_DIR.format(DATASET_NAME_BOMBAY))
 
     PATH_TOKENIZER = '/home/shirin/query_embedding/tokenizer'
     PATH_TOKENIZED_DF = '/home/shirin/query_embedding/tokenized_df'

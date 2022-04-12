@@ -19,7 +19,7 @@ def save_prediction_result(path_dict: dict, label_index: str, points_list: list,
 
 
 def predict_and_save_results(fine_tuned_model, path_dict: dict):
-    df = pd.read_csv(Constants.PATH_DATASET_TOKENIZED_AND_LABELED)
+    df = pd.read_csv(Constants.PATH_DATASET_TOKENIZED_AND_LABELED_SDSS)
     sql_tokenizer = load_from_disk_or_call_func(Constants.PATH_TOKENIZER, initialize_sql_base_tokenizer, df)
     sql_tokenized = load_from_disk_or_call_func(
         Constants.PATH_TOKENIZED_DF, sql_based_tokenizer, df.full_query, sql_tokenizer

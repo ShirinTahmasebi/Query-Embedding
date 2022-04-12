@@ -1,4 +1,4 @@
-from data_preparation import DataPreparation
+from fine_tuning_data_preparation import DataPreparation
 from helper import *
 from helper_enum import AllModelTaskItems, ModelTaskItem
 
@@ -21,7 +21,7 @@ def fine_tune_model_and_save(tokenized, model_task_item: ModelTaskItem):
 
 
 if __name__ == '__main__':
-    df = pd.read_csv(Constants.URL_DATASET_PREPROCESSED_TOKENIZED)
+    df = pd.read_csv(Constants.URL_DATASET_PREPROCESSED_TOKENIZED_SDSS)
     sql_tokenizer = initialize_sql_base_tokenizer(df)
     sql_based_tokenizer, sql_based_tokenized = sql_based_tokenizer(df.full_query, sql_tokenizer)
 

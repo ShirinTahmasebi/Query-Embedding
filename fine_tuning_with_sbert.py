@@ -30,9 +30,9 @@ def fine_tune_save_and_predict_siamese(model_task_item: ModelTaskItem, model_inp
 
 if __name__ == '__main__':
     df, siamese_df, triplet_df = load_datasets(
-        Constants.URL_DATASET_PREPROCESSED_TOKENIZED,
-        Constants.PATH_DATASET_SIAMESE,
-        Constants.PATH_DATASET_TRIPLET
+        Constants.URL_DATASET_PREPROCESSED_TOKENIZED_SDSS,
+        Constants.PATH_DATASET_SIAMESE_SDSS,
+        Constants.PATH_DATASET_TRIPLET_SDSS
     )
     siamese_df = siamese_df[siamese_df['similarity_score'] == 1]
 

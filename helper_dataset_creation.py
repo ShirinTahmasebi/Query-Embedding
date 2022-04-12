@@ -2,8 +2,6 @@ import pandas as pd
 import numpy as np
 
 from constants import Constants
-from query_pattern_regex import *
-from query_pattern import QueryPatterns, QueryPattern
 
 
 def create_siamese_row(query_one: str, query_two: str, similarity_score: int):
@@ -83,54 +81,3 @@ def find_different_queries(df: pd.DataFrame, label: int, similar_labels: list):
 
     different_queries = different_df.iloc[random_selection]
     return different_queries.reset_index(drop=True)
-
-
-if __name__ == '__main__':
-    df = pd.read_csv(Constants.URL_DATASET_PREPROCESSED_TOKENIZED)
-
-    patterns = QueryPatterns()
-    patterns.add_item(QueryPattern(0, query_pattern_regex[0], []))
-    patterns.add_item(QueryPattern(1, query_pattern_regex[1], []))
-    patterns.add_item(QueryPattern(2, query_pattern_regex[2], []))
-    patterns.add_item(QueryPattern(3, query_pattern_regex[3], []))
-    patterns.add_item(QueryPattern(4, query_pattern_regex[4], [4, 5]))
-    patterns.add_item(QueryPattern(5, query_pattern_regex[5], [4, 5]))
-    patterns.add_item(QueryPattern(6, query_pattern_regex[6], [6, 7, 8, 9]))
-    patterns.add_item(QueryPattern(7, query_pattern_regex[7], [6, 7, 8, 9]))
-    patterns.add_item(QueryPattern(8, query_pattern_regex[8], [6, 7, 8, 9]))
-    patterns.add_item(QueryPattern(9, query_pattern_regex[9], [6, 7, 8, 9]))
-    patterns.add_item(QueryPattern(10, query_pattern_regex[10], []))
-    patterns.add_item(QueryPattern(11, query_pattern_regex[11], []))
-
-    df['labels'] = df.apply(lambda x: patterns.get_matched_pattern_key(x.full_query), axis=1)
-    df.to_csv(Constants.PATH_DATASET_TOKENIZED_AND_LABELED, index=False)
-
-    labeled_df = df[df.labels != -1][['full_query', 'tokens', 'labels']]
-
-    similar_queries = []
-    siamese_df = pd.DataFrame(columns=[Constants.COLUMN_NAME_QUERY_ONE, Constants.COLUMN_NAME_QUERY_TWO,
-                                       Constants.COLUMN_NAME_SIMILARITY_SCORE])
-    triplet_df = pd.DataFrame(
-        columns=[Constants.COLUMN_NAME_ANCHOR, Constants.COLUMN_NAME_POSITIVE, Constants.COLUMN_NAME_NEGATIVE])
-
-    for labeled_df_index, labeled_df_row in labeled_df.iterrows():
-        query = labeled_df_row.full_query
-        tokens = labeled_df_row.tokens
-        label = labeled_df_row.labels
-        similar_labels = patterns.get_similar_patterns(label)
-
-        similar_queries = find_similar_queries(labeled_df, query, label, similar_labels)
-        different_queries = find_different_queries(labeled_df, query, similar_labels)
-
-        siamese_df = siamese_df.append(create_siamese_batch_row(query, similar_queries, 1))
-        siamese_df = siamese_df.append(create_siamese_batch_row(query, different_queries, 0))
-
-        triplet_df = triplet_df.append(create_triplet_batch_row(query, different_queries, similar_queries))
-
-    assert not siamese_df.isnull().values.any()
-    assert not triplet_df.isnull().values.any()
-
-    siamese_df.to_csv(Constants.PATH_DATASET_SIAMESE, index=False)
-    triplet_df.to_csv(Constants.PATH_DATASET_TRIPLET, index=False)
-
-    print('Datasets are saved!')
