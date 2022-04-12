@@ -31,8 +31,8 @@ def initialize_embedding_model(bert_model_name: str):
     return embedding_model
 
 
-def create_sbert_model_siamese():
-    embedding_model = initialize_embedding_model()
+def create_sbert_model_siamese(bert_model_name: str):
+    embedding_model = initialize_embedding_model(bert_model_name)
 
     first_input_ids = layers.Input(name="1st_input_ids", shape=(Constants.MAX_LENGTH,), dtype=tf.int64)
     first_attention_mask = layers.Input(name="1st_attention", shape=(Constants.MAX_LENGTH,), dtype=tf.int64)

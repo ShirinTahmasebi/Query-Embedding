@@ -3,26 +3,14 @@ import pandas as pd
 from constants import Constants
 
 
-def plot_all_labels():
+def plot_all_labels(path_dict: dict):
+    import matplotlib.pyplot as plt
     import pickle
 
-    x = pickle.load(open(Constants.PATH_PREDICTED_TRIPLET_BERT_2D_X, 'rb'))
-    y = pickle.load(open(Constants.PATH_PREDICTED_TRIPLET_BERT_2D_Y, 'rb'))
-    labels = pickle.load(open(Constants.PATH_PREDICTED_TRIPLET_BERT_LABELS, 'rb'))
-
-    import matplotlib.pyplot as plt
-    import pandas as pd
-
-    color_map = {0: 'red', 1: 'blue', 2: 'lightgreen', 3: 'purple', 4: 'cyan', 5: 'black', 6: 'yellow', 7: 'magenta',
-                 8: 'plum', 9: 'yellowgreen', 10: 'darkorchid', 11: 'darkgreen'}
-
-    fig, axes = plt.subplots(nrows=4, ncols=3, figsize=(10, 10))
-    for idx, cl in enumerate(range(10)):
-        axes[int(cl / 3), cl % 3].scatter(
-            x=pd.Series(x)[(pd.Series(labels) == cl).tolist()].tolist(),
-            y=pd.Series(y)[(pd.Series(labels) == cl).tolist()].tolist(),
-            color=color_map[cl]
-        )
+    for idx, label_index in enumerate(range(12)):
+        x = pickle.load(open(path_dict['x'].format('label_' + str(label_index)), 'rb'))
+        y = pickle.load(open(path_dict['y'].format('label_' + str(label_index)), 'rb'))
+        plt.scatter(x, y)
     plt.show()
 
 
@@ -80,7 +68,7 @@ def calculate_cosine_similarity(path_dict: dict):
     from sklearn import preprocessing
     import numpy as np
     min_max_scaler = preprocessing.MinMaxScaler()
-    score_scaled = min_max_scaler.fit_transform(np.array(list(cosine_similarity_dict.values())).reshape(-1,1))
+    score_scaled = min_max_scaler.fit_transform(np.array(list(cosine_similarity_dict.values())).reshape(-1, 1))
     df = pd.DataFrame(columns=['labels', 'score'])
     df['score'] = np.squeeze(score_scaled)
     df['labels'] = list(cosine_similarity_dict.keys())
@@ -88,5 +76,19 @@ def calculate_cosine_similarity(path_dict: dict):
 
 
 if __name__ == '__main__':
+    plot_all_labels(Constants.TRIPLET_BERT_RESULT_PATH_DIC)
+    plot_all_labels(Constants.TRIPLET_CODE_BERT_RESULT_PATH_DIC)
+    plot_all_labels(Constants.SIAMESE_BERT_RESULT_PATH_DIC)
+    plot_all_labels(Constants.SIAMESE_CODE_BERT_RESULT_PATH_DIC)
+
     plot_each_label(Constants.TRIPLET_BERT_RESULT_PATH_DIC)
-    calculate_cosine_similarity(Constants.TRIPLET_BERT_RESULT_PATH_DIC)
+    plot_each_label(Constants.TRIPLET_CODE_BERT_RESULT_PATH_DIC)
+    plot_each_label(Constants.SIAMESE_BERT_RESULT_PATH_DIC)
+    plot_each_label(Constants.SIAMESE_CODE_BERT_RESULT_PATH_DIC)
+
+    df_cosine_similarity_triplet_bert = calculate_cosine_similarity(Constants.TRIPLET_BERT_RESULT_PATH_DIC)
+    df_cosine_similarity_triplet_code_bert = calculate_cosine_similarity(Constants.TRIPLET_CODE_BERT_RESULT_PATH_DIC)
+    df_cosine_similarity_siamese_bert = calculate_cosine_similarity(Constants.SIAMESE_BERT_RESULT_PATH_DIC)
+    df_cosine_similarity_siamese_code_bert = calculate_cosine_similarity(Constants.SIAMESE_CODE_BERT_RESULT_PATH_DIC)
+
+    pass

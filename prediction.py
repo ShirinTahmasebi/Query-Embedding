@@ -1,6 +1,6 @@
 from helper import *
 from helper_enum import AllModelTaskItems, ModelTaskItem
-from helper_prediction import load_bert_sub_model_of_triplet
+from helper_prediction import load_bert_sub_model_of_triplet, load_bert_sub_model_of_siamese
 
 
 def save_prediction_result(path_dict: dict, label_index: str, points_list: list, all_cls_list: list):
@@ -56,10 +56,14 @@ def predict_and_save_results(fine_tuned_model, path_dict: dict):
 
             cls_list = fine_tuned_model(sql_based_tokenized_temp).last_hidden_state[:, 0, :]
 
-            from sklearn.manifold import TSNE
+            # from sklearn.manifold import TSNE
 
-            tsne = TSNE(n_components=2, random_state=0)
-            cls_list_2d = tsne.fit_transform(cls_list)
+            # tsne = TSNE(n_components=2, random_state=0)
+            # cls_list_2d = tsne.fit_transform(cls_list)
+
+            from sklearn.decomposition import PCA
+            pca = PCA(n_components=2)
+            cls_list_2d = pca.fit_transform(cls_list)
 
             points_list = [*points_list, *cls_list_2d]
             all_cls_list = [*all_cls_list, *cls_list]
@@ -72,5 +76,17 @@ def predict_and_save_results(fine_tuned_model, path_dict: dict):
 
 if __name__ == '__main__':
     task: ModelTaskItem = AllModelTaskItems.CODEBERT_TRIPLET.value
+    code_bert_fine_tuned_with_triplet_model = load_bert_sub_model_of_triplet(task)
+    predict_and_save_results(code_bert_fine_tuned_with_triplet_model, task.get_prediction_results_path())
+
+    task: ModelTaskItem = AllModelTaskItems.BERT_TRIPLET.value
     bert_fine_tuned_with_triplet_model = load_bert_sub_model_of_triplet(task)
     predict_and_save_results(bert_fine_tuned_with_triplet_model, task.get_prediction_results_path())
+
+    task: ModelTaskItem = AllModelTaskItems.CODEBERT_SIAMESE.value
+    code_bert_fine_tuned_with_siamese_model = load_bert_sub_model_of_siamese(task)
+    predict_and_save_results(code_bert_fine_tuned_with_siamese_model, task.get_prediction_results_path())
+
+    task: ModelTaskItem = AllModelTaskItems.BERT_SIAMESE.value
+    bert_fine_tuned_with_siamese_model = load_bert_sub_model_of_siamese(task)
+    predict_and_save_results(bert_fine_tuned_with_siamese_model, task.get_prediction_results_path())

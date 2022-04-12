@@ -5,16 +5,18 @@ import torch
 from constants import Constants
 from helper import load_from_disk_or_call_func, sql_based_tokenizer
 from helper_enum import ModelTaskItem
-from sbert_model_creator import create_sbert_model_triplet
+from sbert_model_creator import create_sbert_model_triplet, create_sbert_model_siamese
+from sbert_model_siamese import SBertModelSiamese
 from sbert_model_triplet import SBertModelTriplet
 
 
-# TODO Shirin: Complete here!
-def load_bert_sub_model_of_siamese():
-    pass
-    # siamese_model_loaded = SBertModelSiamese(create_sbert_model_siamese())
-    # siamese_model_loaded.load_weights(Constants.PATH_FINE_TUNED_MODEL_WEIGHTS_SIAMESE)
-    # return siamese_model_loaded.#layers[0].layers[9].layers[3]
+def load_bert_sub_model_of_siamese(model_task_item: ModelTaskItem):
+    bert_model_name = model_task_item.get_model_name()
+    weights_path = model_task_item.get_weights_path()
+
+    siamese_model_loaded = SBertModelSiamese(create_sbert_model_siamese(bert_model_name))
+    siamese_model_loaded.load_weights(weights_path)
+    return siamese_model_loaded.layers[0].layers[6].layers[3]
 
 
 def load_bert_sub_model_of_triplet(model_task_item: ModelTaskItem):
@@ -72,6 +74,34 @@ def get_tokenized_triplet_inputs(triplet_df: pd.DataFrame, sql_tokenizer):
     )[1]
 
     return tokenized_input_triplet_anchor, tokenized_input_triplet_positive, tokenized_input_triplet_negative
+
+
+def train_siamese_model(
+        bert_model_name,
+        tokenized_input_siamese_one,
+        tokenized_input_siamese_two
+):
+    from tensorflow.keras import optimizers
+
+    siamese_network = SBertModelSiamese(create_sbert_model_siamese(bert_model_name))
+    siamese_network.compile(optimizer=optimizers.Adam(0.0001))
+    siamese_network.fit(
+        [
+            tf.convert_to_tensor(tokenized_input_siamese_one['input_ids'].numpy()),
+            tf.convert_to_tensor(tokenized_input_siamese_one['attention_mask'].numpy()),
+            tf.convert_to_tensor(tokenized_input_siamese_one['token_type_ids'].numpy()),
+
+            tf.convert_to_tensor(tokenized_input_siamese_two['input_ids'].numpy()),
+            tf.convert_to_tensor(tokenized_input_siamese_two['attention_mask'].numpy()),
+            tf.convert_to_tensor(tokenized_input_siamese_two['token_type_ids'].numpy())
+        ],
+        epochs=10,
+        batch_size=4,
+        steps_per_epoch=100,
+        validation_steps=10
+    )
+
+    return siamese_network
 
 
 def train_triplet_model(
