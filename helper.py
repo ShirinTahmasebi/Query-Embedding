@@ -7,16 +7,23 @@ from helper_enum import BaseModel
 from torch_dataset import TorchDataset
 
 
-def load_from_disk_or_call_func(path: str, function, *args):
+def load_from_disk_or_call_func(path_str: str, function, *args):
     import pickle
     try:
-        loaded_object = pickle.load(open(path, 'rb'))
+        loaded_object = pickle.load(open(path_str, 'rb'))
         if loaded_object:
             return loaded_object
     except Exception:
-        print("File ", path, " did not exist. Start creating the file ...")
+        print("File ", path_str, " did not exist. Start creating the file ...")
 
     calculated_object = function(*args)
+
+    # Check if path exists!
+    from pathlib import Path
+    path = Path(path_str)
+    if not Path.exists(path.parent):
+        Path.mkdir(path.parent)
+
     pickle.dump(calculated_object, open(path, 'wb'))
     return calculated_object
 
@@ -61,7 +68,7 @@ def sql_based_tokenizer(input_col: pd.Series, sql_tokenizer):
 
     for query in input_list:
         input_id_tokenized = sql_tokenizer.encode(query)
-        padding_len = 512 - len(input_id_tokenized)
+        padding_len = 128 - len(input_id_tokenized)
 
         input_id = torch.nn.functional.pad(
             input=torch.tensor(input_id_tokenized), pad=(0, padding_len), mode='constant', value=0
@@ -69,13 +76,13 @@ def sql_based_tokenizer(input_col: pd.Series, sql_tokenizer):
 
         mask = torch.ones(len(input_id_tokenized), dtype=torch.int)
         mask = torch.nn.functional.pad(input=mask, pad=(0, padding_len), mode='constant', value=0)
-        token_type = torch.zeros(512, dtype=torch.int)
+        token_type = torch.zeros(128, dtype=torch.int)
 
         tokenized['input_ids'] = torch.stack([*tokenized['input_ids'], input_id])
         tokenized['attention_mask'] = torch.stack([*tokenized['attention_mask'], mask])
         tokenized['token_type_ids'] = torch.stack([*tokenized['token_type_ids'], token_type])
 
-    return sql_tokenizer, tokenized
+    return tokenized
 
 
 def create_torch_dataset(tokenized, data_processor):

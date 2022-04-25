@@ -35,11 +35,13 @@ def load_datasets(*dataset_names):
         loaded_datasets.append(pd.read_csv(dataset_name))
     return loaded_datasets
 
-
+# TODO Shirin: These two methods should be moved to helper_tokenization file.
 def get_tokenized_siamese_inputs(siamese_df: pd.DataFrame, sql_tokenizer):
-    # TODO Shirin: Fix this inconsistency!
     tokenized_input_siamese_one = load_from_disk_or_call_func(
-        Constants.PATH_TOKENIZED_SIAMESE_ONE, sql_based_tokenizer, siamese_df['query_one'], sql_tokenizer
+        Constants.PATH_TOKENIZED_SIAMESE_ONE,
+        sql_based_tokenizer,
+        siamese_df['query_one'],
+        sql_tokenizer
     )
 
     tokenized_input_siamese_two = load_from_disk_or_call_func(
@@ -47,11 +49,12 @@ def get_tokenized_siamese_inputs(siamese_df: pd.DataFrame, sql_tokenizer):
         sql_based_tokenizer,
         siamese_df['query_two'],  # This should be passed to the 'sql_based_tokenizer' function.
         sql_tokenizer  # This should be passed to the 'sql_based_tokenizer' function.
-    )[1]
+    )
 
     return tokenized_input_siamese_one, tokenized_input_siamese_two
 
 
+# TODO Shirin: Remove the cached files and remove these '[1]' and re-run!
 def get_tokenized_triplet_inputs(dataset: Dataset, sql_tokenizer):
     triplet_df = pd.read_csv(dataset.get_path_triplet_dataset())
     tokenized_input_triplet_anchor = load_from_disk_or_call_func(
@@ -59,21 +62,21 @@ def get_tokenized_triplet_inputs(dataset: Dataset, sql_tokenizer):
         sql_based_tokenizer,
         triplet_df['anchor'],  # This should be passed to the 'sql_based_tokenizer' function.
         sql_tokenizer  # This should be passed to the 'sql_based_tokenizer' function.
-    )[1]
+    )
 
     tokenized_input_triplet_positive = load_from_disk_or_call_func(
         dataset.get_path_tokenized_triplet_positive(),
         sql_based_tokenizer,
         triplet_df['positive'],  # This should be passed to the 'sql_based_tokenizer' function.
         sql_tokenizer  # This should be passed to the 'sql_based_tokenizer' function.
-    )[1]
+    )
 
     tokenized_input_triplet_negative = load_from_disk_or_call_func(
         dataset.get_path_tokenized_triplet_negative(),
         sql_based_tokenizer,
         triplet_df['negative'],  # This should be passed to the 'sql_based_tokenizer' function.
         sql_tokenizer  # This should be passed to the 'sql_based_tokenizer' function.
-    )[1]
+    )
 
     return tokenized_input_triplet_anchor, tokenized_input_triplet_positive, tokenized_input_triplet_negative
 

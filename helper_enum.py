@@ -25,14 +25,12 @@ class ModelTaskItem:
             self,
             model: BaseModel,
             task: FineTuningTasks,
-            prefix_model_name: str,
             weights_path: str,
             prediction_results_path: dict
     ):
         self._model = model
         self._model_name = self._set_model_name(model)
         self._task = task
-        self._prefix_model_name = prefix_model_name
         self._weights_path = weights_path
         self._prediction_results_path = prediction_results_path
 
@@ -51,9 +49,6 @@ class ModelTaskItem:
     def get_task(self):
         return self._task
 
-    def get_prefix_model_name(self):
-        return self._prefix_model_name
-
     def get_weights_path(self):
         return self._weights_path
 
@@ -66,7 +61,6 @@ class AllModelTaskItems(Enum):
     BERT_MLM = ModelTaskItem(
         BaseModel.BERT,
         FineTuningTasks.MLM,
-        'bert_mlm',
         Constants.PATH_FINE_TUNED_MODEL_WEIGHTS_MLM_BERT,
         Constants.MLM_BERT_RESULT_PATH_DIC
     )
@@ -74,7 +68,6 @@ class AllModelTaskItems(Enum):
     BERT_SIAMESE = ModelTaskItem(
         BaseModel.BERT,
         FineTuningTasks.SIAMESE,
-        'bert_siamese',
         Constants.PATH_FINE_TUNED_MODEL_WEIGHTS_SIAMESE_BERT,
         Constants.SIAMESE_BERT_RESULT_PATH_DIC
     )
@@ -82,7 +75,6 @@ class AllModelTaskItems(Enum):
     BERT_TRIPLET = ModelTaskItem(
         BaseModel.BERT,
         FineTuningTasks.TRIPLET,
-        'bert_triplet',
         Constants.PATH_FINE_TUNED_MODEL_WEIGHTS_TRIPLET_BERT,
         Constants.TRIPLET_BERT_RESULT_PATH_DIC
     )
@@ -91,7 +83,6 @@ class AllModelTaskItems(Enum):
     CUBERT_MLM = ModelTaskItem(
         BaseModel.CUBERT,
         FineTuningTasks.MLM,
-        'cubert_mlm',
         Constants.PATH_FINE_TUNED_MODEL_WEIGHTS_MLM_CUBERT,
         Constants.MLM_CUBERT_RESULT_PATH_DIC
     )
@@ -99,7 +90,6 @@ class AllModelTaskItems(Enum):
     CUBERT_SIAMESE = ModelTaskItem(
         BaseModel.CUBERT,
         FineTuningTasks.SIAMESE,
-        'cubert_siamese',
         Constants.PATH_FINE_TUNED_MODEL_WEIGHTS_SIAMESE_CUBERT,
         Constants.SIAMESE_CUBERT_RESULT_PATH_DIC
     )
@@ -107,7 +97,6 @@ class AllModelTaskItems(Enum):
     CUBERT_TRIPLET = ModelTaskItem(
         BaseModel.CUBERT,
         FineTuningTasks.TRIPLET,
-        'cubert_triplet',
         Constants.PATH_FINE_TUNED_MODEL_WEIGHTS_TRIPLET_CUBERT,
         Constants.TRIPLET_CUBERT_RESULT_PATH_DIC
     )
@@ -116,7 +105,6 @@ class AllModelTaskItems(Enum):
     CODEBERT_MLM = ModelTaskItem(
         BaseModel.CODE_BERT,
         FineTuningTasks.MLM,
-        'codebert_mlm',
         Constants.PATH_FINE_TUNED_MODEL_WEIGHTS_MLM_CODE_BERT,
         Constants.MLM_CODE_BERT_RESULT_PATH_DIC
     )
@@ -124,7 +112,6 @@ class AllModelTaskItems(Enum):
     CODEBERT_SIAMESE = ModelTaskItem(
         BaseModel.CODE_BERT,
         FineTuningTasks.SIAMESE,
-        'codebert_siamese',
         Constants.PATH_FINE_TUNED_MODEL_WEIGHTS_SIAMESE_CODE_BERT,
         Constants.SIAMESE_CODE_BERT_RESULT_PATH_DIC
     )
@@ -132,7 +119,20 @@ class AllModelTaskItems(Enum):
     CODEBERT_TRIPLET = ModelTaskItem(
         BaseModel.CODE_BERT,
         FineTuningTasks.TRIPLET,
-        'codebert_triplet',
         Constants.PATH_FINE_TUNED_MODEL_WEIGHTS_TRIPLET_CODE_BERT,
         Constants.TRIPLET_CODE_BERT_RESULT_PATH_DIC
+    )
+
+    CODEBERT_TRIPLET_TEMP = ModelTaskItem(
+        BaseModel.CODE_BERT,
+        FineTuningTasks.TRIPLET,
+        Constants.PATH_FINE_TUNED_MODEL_WEIGHTS_TEMP_CODE_BERT,
+        Constants.TRIPLET_CODE_BERT_RESULT_PATH_DIC_TEMP
+    )
+
+    BERT_TRIPLET_TEMP = ModelTaskItem(
+        BaseModel.BERT,
+        FineTuningTasks.TRIPLET,
+        Constants.PATH_FINE_TUNED_MODEL_WEIGHTS_TEMP_BERT,
+        Constants.TRIPLET_BERT_RESULT_PATH_DIC_TEMP
     )

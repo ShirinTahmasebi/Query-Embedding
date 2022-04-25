@@ -2,16 +2,14 @@ class Constants:
     PATH_BASE = '/home/shirin/query_embedding'
 
     URL_DATASET_PREPROCESSED_TOKENIZED_SDSS = "https://raw.githubusercontent.com/ShirinTahmasebi/KTH-ID2223/main/dataset/preprocessed_tokenized_sdss.csv"
-    URL_DATASET_PREPROCESSED_TOKENIZED_BOMBAY = "https://raw.githubusercontent.com/UBOdin/EttuBench/master/data/bombay_queries.csv"
     URL_DATASET_PREPROCESSED_RAW_BOMBAY = "https://raw.githubusercontent.com/UBOdin/EttuBench/master/data/bombay_queries.csv"
 
     DATASET_NAME_SDSS = 'sdss'
     DATASET_NAME_BOMBAY = 'bombay'
 
-
     PATH_DATASET_DIR = PATH_BASE + '/datasets'
-    PATH_DATASET_TOKENIZED_SDSS = PATH_DATASET_DIR + '/' + DATASET_NAME_SDSS
-    PATH_DATASET_TOKENIZED_BOMBAY = PATH_DATASET_DIR + '/' + DATASET_NAME_BOMBAY
+    PATH_DATASET_TOKENIZED_SDSS = PATH_DATASET_DIR + '/' + DATASET_NAME_SDSS + '/tokenized.csv'
+    PATH_DATASET_TOKENIZED_BOMBAY = PATH_DATASET_DIR + '/' + DATASET_NAME_BOMBAY + '/tokenized.csv'
     PATH_DATASET_SBERT_DIR = PATH_DATASET_DIR + '/{}/sbert'
 
     # SDSS
@@ -47,7 +45,9 @@ class Constants:
     PATH_TOKENIZED_TRIPLET_POSITIVE = PATH_BASE + '/tokenized_triplet_positive'
     PATH_TOKENIZED_TRIPLET_NEGATIVE = PATH_BASE + '/tokenized_triplet_negative'
 
-    PATH_FINE_TUNED_MODEL_WEIGHTS_BASE = PATH_BASE + '/model_weights/{}'
+    PATH_FINE_TUNED_MODEL_WEIGHTS_BASE = PATH_BASE + '/model_weights/{}' # Database name should be injected
+    PATH_FINE_TUNED_MODEL_WEIGHTS_TEMP_CODE_BERT = PATH_BASE + '/model_weights/temp/temp.pth'
+    PATH_FINE_TUNED_MODEL_WEIGHTS_TEMP_BERT = PATH_BASE + '/model_weights/temp/bert_temp.pth'
     PATH_FINE_TUNED_MODEL_WEIGHTS_MLM_BERT = PATH_FINE_TUNED_MODEL_WEIGHTS_BASE + '/bert_mlm_weights'
     PATH_FINE_TUNED_MODEL_WEIGHTS_SIAMESE_BERT = PATH_FINE_TUNED_MODEL_WEIGHTS_BASE + '/bert_siamese_weights'
     PATH_FINE_TUNED_MODEL_WEIGHTS_TRIPLET_BERT = PATH_FINE_TUNED_MODEL_WEIGHTS_BASE + '/bert_triple_weights'
@@ -58,51 +58,63 @@ class Constants:
     PATH_FINE_TUNED_MODEL_WEIGHTS_SIAMESE_CODE_BERT = PATH_FINE_TUNED_MODEL_WEIGHTS_BASE + '/code_bert_siamese_weights'
     PATH_FINE_TUNED_MODEL_WEIGHTS_TRIPLET_CODE_BERT = PATH_FINE_TUNED_MODEL_WEIGHTS_BASE + '/code_bert_triple_weights'
 
-    PATH_PREDICTED_MLM_BERT_2D_X = PATH_BASE + '/results/{}/mlm_bert_predicted_points_x.pickle'
-    PATH_PREDICTED_MLM_BERT_2D_Y = PATH_BASE + '/results/{}/mlm_bert_predicted_points_y.pickle'
-    PATH_PREDICTED_MLM_BERT_LABELS = PATH_BASE + '/results/{}/mlm_bert_predicted_points_labels.pickle'
-    PATH_PREDICTED_MLM_BERT_CLS = PATH_BASE + '/results/{}/mlm_bert_predicted_points_cls_list.pickle'
+    PATH_RESULTS_BASE = PATH_BASE + '/results/{database}'
 
-    PATH_PREDICTED_SIAMESE_BERT_2D_X = PATH_BASE + '/results/{}/siamese_bert_predicted_points_x.pickle'
-    PATH_PREDICTED_SIAMESE_BERT_2D_Y = PATH_BASE + '/results/{}/siamese_bert_predicted_points_y.pickle'
-    PATH_PREDICTED_SIAMESE_BERT_LABELS = PATH_BASE + '/results/{}/siamese_bert_predicted_points_labels.pickle'
-    PATH_PREDICTED_SIAMESE_BERT_CLS = PATH_BASE + '/results/{}/siamese_bert_predicted_points_cls_list.pickle'
+    PATH_PREDICTED_MLM_BERT_2D_X = PATH_RESULTS_BASE + '/{label}/mlm_bert_predicted_points_x.pickle'
+    PATH_PREDICTED_MLM_BERT_2D_Y = PATH_RESULTS_BASE + '/{label}/mlm_bert_predicted_points_y.pickle'
+    PATH_PREDICTED_MLM_BERT_LABELS = PATH_RESULTS_BASE + '/{label}/mlm_bert_predicted_points_labels.pickle'
+    PATH_PREDICTED_MLM_BERT_CLS = PATH_RESULTS_BASE + '/{label}/mlm_bert_predicted_points_cls_list.pickle'
+
+    PATH_PREDICTED_SIAMESE_BERT_2D_X = PATH_RESULTS_BASE + '/{label}/siamese_bert_predicted_points_x.pickle'
+    PATH_PREDICTED_SIAMESE_BERT_2D_Y = PATH_RESULTS_BASE + '/{label}/siamese_bert_predicted_points_y.pickle'
+    PATH_PREDICTED_SIAMESE_BERT_LABELS = PATH_RESULTS_BASE + '/{label}/siamese_bert_predicted_points_labels.pickle'
+    PATH_PREDICTED_SIAMESE_BERT_CLS = PATH_RESULTS_BASE + '/{label}/siamese_bert_predicted_points_cls_list.pickle'
 
     # TODO Shirin: The format of these names do not match others!
-    PATH_PREDICTED_TRIPLET_BERT_2D_X = PATH_BASE + '/results/{}/predicted_points_x_triplet_bert.pickle'
-    PATH_PREDICTED_TRIPLET_BERT_2D_Y = PATH_BASE + '/results/{}/predicted_points_y_triplet_bert.pickle'
-    PATH_PREDICTED_TRIPLET_BERT_LABELS = PATH_BASE + '/results/{}/predicted_points_labels_triplet_bert.pickle'
-    PATH_PREDICTED_TRIPLET_BERT_CLS = PATH_BASE + '/results/{}/predicted_points_cls_list.pickle'
+    PATH_PREDICTED_TRIPLET_BERT_2D_X = PATH_RESULTS_BASE + '/{label}/predicted_points_x_triplet_bert.pickle'
+    PATH_PREDICTED_TRIPLET_BERT_2D_Y = PATH_RESULTS_BASE + '/{label}/predicted_points_y_triplet_bert.pickle'
+    PATH_PREDICTED_TRIPLET_BERT_LABELS = PATH_RESULTS_BASE + '/{label}/predicted_points_labels_triplet_bert.pickle'
+    PATH_PREDICTED_TRIPLET_BERT_CLS = PATH_RESULTS_BASE + '/{label}/predicted_points_cls_list.pickle'
 
-    PATH_PREDICTED_MLM_CUBERT_2D_X = PATH_BASE + '/results/{}/mlm_cubert_predicted_points_x.pickle'
-    PATH_PREDICTED_MLM_CUBERT_2D_Y = PATH_BASE + '/results/{}/mlm_cubert_predicted_points_y.pickle'
-    PATH_PREDICTED_MLM_CUBERT_LABELS = PATH_BASE + '/results/{}/mlm_cubert_predicted_points_labels.pickle'
-    PATH_PREDICTED_MLM_CUBERT_CLS = PATH_BASE + '/results/{}/mlm_cubert_predicted_points_cls_list.pickle'
+    PATH_PREDICTED_MLM_CUBERT_2D_X = PATH_RESULTS_BASE + '/{label}/mlm_cubert_predicted_points_x.pickle'
+    PATH_PREDICTED_MLM_CUBERT_2D_Y = PATH_RESULTS_BASE + '/{label}/mlm_cubert_predicted_points_y.pickle'
+    PATH_PREDICTED_MLM_CUBERT_LABELS = PATH_RESULTS_BASE + '/{label}/mlm_cubert_predicted_points_labels.pickle'
+    PATH_PREDICTED_MLM_CUBERT_CLS = PATH_RESULTS_BASE + '/{label}/mlm_cubert_predicted_points_cls_list.pickle'
 
-    PATH_PREDICTED_SIAMESE_CUBERT_2D_X = PATH_BASE + '/results/{}/siamese_cubert_predicted_points_x.pickle'
-    PATH_PREDICTED_SIAMESE_CUBERT_2D_Y = PATH_BASE + '/results/{}/siamese_cubert_predicted_points_y.pickle'
-    PATH_PREDICTED_SIAMESE_CUBERT_LABELS = PATH_BASE + '/results/{}/siamese_cubert_predicted_points_labels.pickle'
-    PATH_PREDICTED_SIAMESE_CUBERT_CLS = PATH_BASE + '/results/{}/siamese_cubert_predicted_points_cls_list.pickle'
+    PATH_PREDICTED_SIAMESE_CUBERT_2D_X = PATH_RESULTS_BASE + '/{label}/siamese_cubert_predicted_points_x.pickle'
+    PATH_PREDICTED_SIAMESE_CUBERT_2D_Y = PATH_RESULTS_BASE + '/{label}/siamese_cubert_predicted_points_y.pickle'
+    PATH_PREDICTED_SIAMESE_CUBERT_LABELS = PATH_RESULTS_BASE + '/{label}/siamese_cubert_predicted_points_labels.pickle'
+    PATH_PREDICTED_SIAMESE_CUBERT_CLS = PATH_RESULTS_BASE + '/{label}/siamese_cubert_predicted_points_cls_list.pickle'
 
-    PATH_PREDICTED_TRIPLET_CUBERT_2D_X = PATH_BASE + '/results/{}/triplet_cubert_predicted_points_x.pickle'
-    PATH_PREDICTED_TRIPLET_CUBERT_2D_Y = PATH_BASE + '/results/{}/triplet_cubert_predicted_points_y.pickle'
-    PATH_PREDICTED_TRIPLET_CUBERT_LABELS = PATH_BASE + '/results/{}/triplet_cubert_predicted_points_labels.pickle'
-    PATH_PREDICTED_TRIPLET_CUBERT_CLS = PATH_BASE + '/results/{}/triplet_cubert_predicted_points_cls_list.pickle'
+    PATH_PREDICTED_TRIPLET_CUBERT_2D_X = PATH_RESULTS_BASE + '/{label}/triplet_cubert_predicted_points_x.pickle'
+    PATH_PREDICTED_TRIPLET_CUBERT_2D_Y = PATH_RESULTS_BASE + '/{label}/triplet_cubert_predicted_points_y.pickle'
+    PATH_PREDICTED_TRIPLET_CUBERT_LABELS = PATH_RESULTS_BASE + '/{label}/triplet_cubert_predicted_points_labels.pickle'
+    PATH_PREDICTED_TRIPLET_CUBERT_CLS = PATH_RESULTS_BASE + '/{label}/triplet_cubert_predicted_points_cls_list.pickle'
 
-    PATH_PREDICTED_MLM_CODE_BERT_2D_X = PATH_BASE + '/results/{}/mlm_code_bert_predicted_points_x.pickle'
-    PATH_PREDICTED_MLM_CODE_BERT_2D_Y = PATH_BASE + '/results/{}/mlm_code_bert_predicted_points_y.pickle'
-    PATH_PREDICTED_MLM_CODE_BERT_LABELS = PATH_BASE + '/results/{}/mlm_code_bert_predicted_points_labels.pickle'
-    PATH_PREDICTED_MLM_CODE_BERT_CLS = PATH_BASE + '/results/{}/mlm_code_bert_predicted_points_cls_list.pickle'
+    PATH_PREDICTED_MLM_CODE_BERT_2D_X = PATH_RESULTS_BASE + '/{label}/mlm_code_bert_predicted_points_x.pickle'
+    PATH_PREDICTED_MLM_CODE_BERT_2D_Y = PATH_RESULTS_BASE + '/{label}/mlm_code_bert_predicted_points_y.pickle'
+    PATH_PREDICTED_MLM_CODE_BERT_LABELS = PATH_RESULTS_BASE + '/{label}/mlm_code_bert_predicted_points_labels.pickle'
+    PATH_PREDICTED_MLM_CODE_BERT_CLS = PATH_RESULTS_BASE + '/{label}/mlm_code_bert_predicted_points_cls_list.pickle'
 
-    PATH_PREDICTED_SIAMESE_CODE_BERT_2D_X = PATH_BASE + '/results/{}/siamese_code_bert_predicted_points_x.pickle'
-    PATH_PREDICTED_SIAMESE_CODE_BERT_2D_Y = PATH_BASE + '/results/{}/siamese_code_bert_predicted_points_y.pickle'
-    PATH_PREDICTED_SIAMESE_CODE_BERT_LABELS = PATH_BASE + '/results/{}/siamese_code_bert_predicted_points_labels.pickle'
-    PATH_PREDICTED_SIAMESE_CODE_BERT_CLS = PATH_BASE + '/results/{}/siamese_code_bert_predicted_points_cls_list.pickle'
+    PATH_PREDICTED_SIAMESE_CODE_BERT_2D_X = PATH_RESULTS_BASE + '/{label}/siamese_code_bert_predicted_points_x.pickle'
+    PATH_PREDICTED_SIAMESE_CODE_BERT_2D_Y = PATH_RESULTS_BASE + '/{label}/siamese_code_bert_predicted_points_y.pickle'
+    PATH_PREDICTED_SIAMESE_CODE_BERT_LABELS = PATH_RESULTS_BASE + '/{label}/siamese_code_bert_predicted_points_labels.pickle'
+    PATH_PREDICTED_SIAMESE_CODE_BERT_CLS = PATH_RESULTS_BASE + '/{label}/siamese_code_bert_predicted_points_cls_list.pickle'
 
-    PATH_PREDICTED_TRIPLET_CODE_BERT_2D_X = PATH_BASE + '/results/{}/triplet_code_bert_predicted_points_x.pickle'
-    PATH_PREDICTED_TRIPLET_CODE_BERT_2D_Y = PATH_BASE + '/results/{}/triplet_code_bert_predicted_points_y.pickle'
-    PATH_PREDICTED_TRIPLET_CODE_BERT_LABELS = PATH_BASE + '/results/{}/triplet_code_bert_predicted_points_labels.pickle'
-    PATH_PREDICTED_TRIPLET_CODE_BERT_CLS = PATH_BASE + '/results/{}/triplet_code_bert_predicted_points_cls_list.pickle'
+    PATH_PREDICTED_TRIPLET_CODE_BERT_2D_X = PATH_RESULTS_BASE + '/{label}/triplet_code_bert_predicted_points_x.pickle'
+    PATH_PREDICTED_TRIPLET_CODE_BERT_2D_Y = PATH_RESULTS_BASE + '/{label}/triplet_code_bert_predicted_points_y.pickle'
+    PATH_PREDICTED_TRIPLET_CODE_BERT_LABELS = PATH_RESULTS_BASE + '/{label}/triplet_code_bert_predicted_points_labels.pickle'
+    PATH_PREDICTED_TRIPLET_CODE_BERT_CLS = PATH_RESULTS_BASE + '/{label}/triplet_code_bert_predicted_points_cls_list.pickle'
+
+    PATH_PREDICTED_TRIPLET_CODE_BERT_2D_X_TEMP = PATH_RESULTS_BASE + '/temp/{label}/triplet_code_bert_predicted_points_x.pickle'
+    PATH_PREDICTED_TRIPLET_CODE_BERT_2D_Y_TEMP = PATH_RESULTS_BASE + '/temp/{label}/triplet_code_bert_predicted_points_y.pickle'
+    PATH_PREDICTED_TRIPLET_CODE_BERT_LABELS_TEMP = PATH_RESULTS_BASE + '/temp/{label}/triplet_code_bert_predicted_points_labels.pickle'
+    PATH_PREDICTED_TRIPLET_CODE_BERT_CLS_TEMP = PATH_RESULTS_BASE + '/temp/{label}/triplet_code_bert_predicted_points_cls_list.pickle'
+
+    PATH_PREDICTED_TRIPLET_BERT_2D_X_TEMP = PATH_RESULTS_BASE + '/temp/{label}/triplet_bert_predicted_points_x.pickle'
+    PATH_PREDICTED_TRIPLET_BERT_2D_Y_TEMP = PATH_RESULTS_BASE + '/temp/{label}/triplet_bert_predicted_points_y.pickle'
+    PATH_PREDICTED_TRIPLET_BERT_LABELS_TEMP = PATH_RESULTS_BASE + '/temp/{label}/triplet_bert_predicted_points_labels.pickle'
+    PATH_PREDICTED_TRIPLET_BERT_CLS_TEMP = PATH_RESULTS_BASE + '/temp/{label}/triplet_bert_predicted_points_cls_list.pickle'
 
     BERT_MODEL_NAME_BASE_UNCASED = "bert-base-uncased"
     BERT_MODEL_NAME_CODE_BERT = "microsoft/codebert-base-mlm"
@@ -186,4 +198,18 @@ class Constants:
         'y': PATH_PREDICTED_TRIPLET_CODE_BERT_2D_Y,
         'labels': PATH_PREDICTED_TRIPLET_CODE_BERT_LABELS,
         'cls': PATH_PREDICTED_TRIPLET_CODE_BERT_CLS
+    }
+
+    TRIPLET_CODE_BERT_RESULT_PATH_DIC_TEMP = {
+        'x': PATH_PREDICTED_TRIPLET_CODE_BERT_2D_X_TEMP,
+        'y': PATH_PREDICTED_TRIPLET_CODE_BERT_2D_Y_TEMP,
+        'labels': PATH_PREDICTED_TRIPLET_CODE_BERT_LABELS_TEMP,
+        'cls': PATH_PREDICTED_TRIPLET_CODE_BERT_CLS_TEMP
+    }
+
+    TRIPLET_BERT_RESULT_PATH_DIC_TEMP = {
+        'x': PATH_PREDICTED_TRIPLET_BERT_2D_X_TEMP,
+        'y': PATH_PREDICTED_TRIPLET_BERT_2D_Y_TEMP,
+        'labels': PATH_PREDICTED_TRIPLET_BERT_LABELS_TEMP,
+        'cls': PATH_PREDICTED_TRIPLET_BERT_CLS_TEMP
     }
